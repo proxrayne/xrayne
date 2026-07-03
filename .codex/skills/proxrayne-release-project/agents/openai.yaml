@@ -1,0 +1,4 @@
+interface:
+  display_name: "Proxrayne Release Project"
+  short_description: "Public release, installer, and artifact guidance"
+  default_prompt: "Use $proxrayne-release-project before changing xrayne release docs or install scripts."
