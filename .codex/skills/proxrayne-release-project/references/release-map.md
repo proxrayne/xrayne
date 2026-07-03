@@ -20,8 +20,9 @@ The public README describes release assets such as:
 - `xrayne-cli-osx-arm64.tar.gz`
 - `xrayne-cli-win-x64.zip`
 - `xrayne-api-image-<version>.tar.gz`
+- `xrayne-ui-image-<version>.tar.gz`
 
-The current source of release-ready CLI and API+UI image artifacts is `xrayne-panel`. Keep this repository aligned with panel release behavior instead of inventing separate build behavior here.
+The current source of release-ready CLI artifacts is `xrayne-cli`. The API image is produced by `xrayne-panel`; the standalone UI image is produced by `xrayne-ui`. Keep this repository aligned with those release workflows instead of inventing separate build behavior here.
 
 ## Validation
 

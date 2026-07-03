@@ -1,12 +1,12 @@
 # XRayne
 
-XRayne is a CLI-managed API and web panel distribution. The public repository provides ready-to-use release artifacts only: prebuilt CLI binaries and a Docker image archive that contains the API with the built web UI.
+XRayne is a CLI-managed API and web panel distribution. The public repository provides ready-to-use release artifacts only: prebuilt CLI binaries, an API Docker image archive, and a standalone UI Docker image archive.
 
 ## Basic Features
 
 - Install the XRayne CLI as the `xrayne` command.
 - Install the API and web panel from a public GitHub release.
-- Run the API and PostgreSQL through Docker Compose.
+- Run the API, UI, and PostgreSQL through Docker Compose.
 - Manage the API service from the CLI: status, start, stop, restart, update.
 - Check the installed CLI version and the installed API version.
 - Keep API data and PostgreSQL data in a configurable host project folder.
@@ -20,9 +20,10 @@ Each release can contain these files:
 | `xrayne-cli-linux-x64.tar.gz` | XRayne CLI for Linux x64. |
 | `xrayne-cli-osx-arm64.tar.gz` | XRayne CLI for macOS Apple Silicon. |
 | `xrayne-cli-win-x64.zip` | XRayne CLI for Windows x64. |
-| `xrayne-api-image-<version>.tar.gz` | Docker image archive for the API with the built web UI. |
+| `xrayne-api-image-<version>.tar.gz` | Docker image archive for the API. |
+| `xrayne-ui-image-<version>.tar.gz` | Docker image archive for the web UI. |
 
-The API image is downloaded and loaded by the CLI during `xrayne api install` and `xrayne update`.
+The API and UI images are downloaded and loaded by the CLI during `xrayne api install` and `xrayne update`.
 
 ## Install CLI With Scripts
 
@@ -178,15 +179,15 @@ After the CLI is installed, run:
 xrayne api install
 ```
 
-The installer downloads the API Docker image from the public release, writes `/opt/xrayne/.env`, creates `/opt/xrayne/docker-compose.yml`, and starts Docker Compose.
+The installer downloads the API and UI Docker images from the public release, writes `/opt/xrayne/.env`, creates `/opt/xrayne/docker-compose.yml`, and starts Docker Compose.
 
 Install the CLI through the script first. The CLI installer prepares Docker and Docker Compose; `xrayne api install` only configures and starts the API runtime.
 
 During installation you will be prompted for:
 
 - API port, default `5000`.
+- UI port, default `8080`.
 - PostgreSQL password for user `postgres`; an empty value generates a password.
-- Optional API prefix for hiding the panel behind a custom path.
 
 The project path is derived from the installed CLI directory. For the default `/opt/xrayne/cli` CLI installation, the project path is `/opt/xrayne`. The project folder contains `config.json`, `.env`, `logs`, `postgres`, `xray`, and other runtime folders at the same level. PostgreSQL data is stored in:
 
@@ -194,9 +195,9 @@ The project path is derived from the installed CLI directory. For the default `/
 <project-path>/postgres
 ```
 
-The web panel is served by the API container on the same host and port.
+The web panel is served by the UI container on `http://0.0.0.0:8080` by default. The API remains available at `http://0.0.0.0:5000/api` by default.
 
-The API container runs with Docker host networking so it can work with host-level Xray core networking. `API_PORT` is the actual port the API listens on; Docker does not publish a separate API container port mapping.
+The API container runs with Docker host networking so it can work with host-level Xray core networking. `PORT` is the actual port the API listens on; Docker does not publish a separate API container port mapping. The UI container publishes `UI_PORT` and proxies same-origin `/api` requests to the API.
 
 ## API Service Commands
 
@@ -210,21 +211,21 @@ xrayne cert install --domain example.com --email admin@example.com
 xrayne cert install --ip-address 203.0.113.10 --email admin@example.com
 xrayne cert status
 xrayne cert renew
-xrayne update [--version latest|tag] [--component all|api|cli] [--force]
+xrayne update [--version latest|tag] [--component all|api|ui|cli] [--force]
 xrayne info
 ```
 
 `xrayne api version` prints the installed API version, the latest available version, and whether an update is available.
 
-`xrayne update` checks the selected release and updates both CLI and API by default. Use `--component api` or `--component cli` to update only one side. Passing an older release tag through `--version` intentionally downgrades that component.
+`xrayne update` checks the selected release and updates CLI, API, and UI by default. Use `--component api`, `--component ui`, or `--component cli` to update only one side. Passing an older release tag through `--version` intentionally downgrades that component.
 
 During update, the CLI migrates runtime files (`.env`, `config.json`, and `docker-compose.yml`) to the schema required by the target release. Migrations support both upgrade and downgrade paths, create backups under `<project-path>/backups/runtime-migrations`, and run before the CLI binary is replaced so downgrade migrations are still handled by the newer CLI.
 
-`xrayne info` prints project/runtime information and checks whether CLI or API updates are available.
+`xrayne info` prints project/runtime information and checks whether CLI, API, or UI updates are available.
 
 ## HTTPS Certificates
 
-`xrayne cert install` issues a Let's Encrypt certificate through `acme.sh` and installs it for the ASP.NET Core API container. The command stores `acme.sh` under `<project-path>/certificates/acme-sh`, stores installed certificate files under `<project-path>/certificates/letsencrypt`, writes Kestrel HTTPS settings to `<project-path>/config.json`, keeps the API listening on the configured `API_PORT`, enables automatic renewal through `acme.sh`, and recreates the API container.
+`xrayne cert install` issues a Let's Encrypt certificate through `acme.sh` and installs it for the ASP.NET Core API container. The command stores `acme.sh` under `<project-path>/certificates/acme-sh`, stores installed certificate files under `<project-path>/certificates/letsencrypt`, writes certificate paths to `<project-path>/.env`, keeps the API listening on the configured `PORT`, enables automatic renewal through `acme.sh`, and recreates the API container.
 
 For a domain certificate, point the domain at the server first, then run:
 
@@ -238,7 +239,7 @@ For an IP address certificate, pass a public IPv4 address:
 xrayne cert install --ip-address 203.0.113.10 --email admin@example.com
 ```
 
-If neither `--domain` nor `--ip-address` is passed, the CLI resolves the server public IPv4 address and issues an IP certificate for it. IP address certificates use the Let's Encrypt `shortlived` profile, so they are valid for about six days and must be renewed frequently. The command uses standalone HTTP-01 validation, so port `80` must be reachable from the Internet while the certificate is being issued or renewed. Private, loopback, and reserved IP addresses are rejected. HTTPS uses the same `API_PORT` that was selected during API installation.
+If neither `--domain` nor `--ip-address` is passed, the CLI resolves the server public IPv4 address and issues an IP certificate for it. IP address certificates use the Let's Encrypt `shortlived` profile, so they are valid for about six days and must be renewed frequently. The command uses standalone HTTP-01 validation, so port `80` must be reachable from the Internet while the certificate is being issued or renewed. Private, loopback, and reserved IP addresses are rejected. HTTPS uses the same `PORT` that was selected during API installation.
 
 ```bash
 xrayne cert renew
