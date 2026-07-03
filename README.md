@@ -2,6 +2,13 @@
 
 XRayne is a CLI-managed API and web panel distribution. The public repository provides ready-to-use release artifacts only: prebuilt CLI binaries, an API Docker image archive, and a standalone UI Docker image archive.
 
+## Related Repositories
+
+- [xrayne-cli](https://github.com/proxrayne/xrayne-cli): source code and release workflow for the `xrayne` command-line tool.
+- [xrayne-api](https://github.com/proxrayne/xrayne-api): backend API source, Docker image build, and API release artifacts.
+- [xrayne-ui](https://github.com/proxrayne/xrayne-ui): web panel source, frontend Docker image build, and UI release artifacts.
+- [xrayne-node](https://github.com/proxrayne/xrayne-node): standalone remote-node service used for host telemetry and remote Xray core operations.
+
 ## Basic Features
 
 - Install the XRayne CLI as the `xrayne` command.
@@ -34,19 +41,19 @@ The CLI installer also installs the required Linux system modules for API manage
 Install the latest CLI:
 
 ```bash
-sudo bash -c "$(curl -sL https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/install-cli.sh)"
+sudo bash -c "$(curl -sL https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/install-cli.sh)"
 ```
 
 Install a specific version:
 
 ```bash
-sudo bash -c "$(curl -sL https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/install-cli.sh)" install-cli --version v1.0.0
+sudo bash -c "$(curl -sL https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/install-cli.sh)" install-cli --version v1.0.0
 ```
 
 Install to a custom application directory:
 
 ```bash
-sudo bash -c "$(curl -sL https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/install-cli.sh)" install-cli --install-dir "/opt/xrayne/cli"
+sudo bash -c "$(curl -sL https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/install-cli.sh)" install-cli --install-dir "/opt/xrayne/cli"
 ```
 
 The shell installer supports:
@@ -64,19 +71,19 @@ The shell installer supports:
 Download and run the PowerShell installer with `curl`:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/install-cli.ps1')); & $script"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/install-cli.ps1')); & $script"
 ```
 
 Install a specific version:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/install-cli.ps1')); & $script -Version 'v1.0.0'"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/install-cli.ps1')); & $script -Version 'v1.0.0'"
 ```
 
 Install to a custom application directory:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/install-cli.ps1')); & $script -InstallDirectory \"$env:USERPROFILE\.xrayne\bin\""
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/install-cli.ps1')); & $script -InstallDirectory \"$env:USERPROFILE\.xrayne\bin\""
 ```
 
 The PowerShell installer supports:
@@ -96,13 +103,13 @@ The PowerShell installer supports:
 Remove the CLI application directory, command wrapper, and confirmed XRayne project data:
 
 ```bash
-sudo bash -c "$(curl -sL https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/uninstall-cli.sh)"
+sudo bash -c "$(curl -sL https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/uninstall-cli.sh)"
 ```
 
 Remove a custom installation:
 
 ```bash
-sudo bash -c "$(curl -sL https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/uninstall-cli.sh)" uninstall-cli --project-dir "/opt/xrayne" --install-dir "/opt/xrayne/cli" --bin-dir "/usr/local/bin"
+sudo bash -c "$(curl -sL https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/uninstall-cli.sh)" uninstall-cli --project-dir "/opt/xrayne" --install-dir "/opt/xrayne/cli" --bin-dir "/usr/local/bin"
 ```
 
 ### Windows PowerShell
@@ -110,13 +117,13 @@ sudo bash -c "$(curl -sL https://raw.githubusercontent.com/VanyaKrotov/xrayne/ma
 Remove the CLI application directory, user PATH entry, and confirmed XRayne project data:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/uninstall-cli.ps1')); & $script"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/uninstall-cli.ps1')); & $script"
 ```
 
 Remove a custom installation:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/VanyaKrotov/xrayne/main/scripts/uninstall-cli.ps1')); & $script -ProjectDirectory \"$env:ProgramFiles\xrayne\" -InstallDirectory \"$env:ProgramFiles\xrayne\cli\""
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$script = [scriptblock]::Create((curl.exe -sL 'https://raw.githubusercontent.com/proxrayne/xrayne/main/scripts/uninstall-cli.ps1')); & $script -ProjectDirectory \"$env:ProgramFiles\xrayne\" -InstallDirectory \"$env:ProgramFiles\xrayne\cli\""
 ```
 
 The uninstall scripts verify the project directory and ask for explicit confirmation before deleting API runtime files, Docker Compose files, PostgreSQL data, and `.env`.
@@ -126,7 +133,7 @@ The uninstall scripts verify the project directory and ask for explicit confirma
 ### Linux x64
 
 ```bash
-curl -fsSL https://github.com/VanyaKrotov/xrayne/releases/latest/download/xrayne-cli-linux-x64.tar.gz -o xrayne-cli-linux-x64.tar.gz
+curl -fsSL https://github.com/proxrayne/xrayne-cli/releases/latest/download/xrayne-cli-linux-x64.tar.gz -o xrayne-cli-linux-x64.tar.gz
 mkdir -p xrayne-cli
 tar -xzf xrayne-cli-linux-x64.tar.gz -C xrayne-cli
 sudo mkdir -p /opt/xrayne/cli
@@ -144,7 +151,7 @@ xrayne version
 ### macOS Apple Silicon
 
 ```bash
-curl -fsSL https://github.com/VanyaKrotov/xrayne/releases/latest/download/xrayne-cli-osx-arm64.tar.gz -o xrayne-cli-osx-arm64.tar.gz
+curl -fsSL https://github.com/proxrayne/xrayne-cli/releases/latest/download/xrayne-cli-osx-arm64.tar.gz -o xrayne-cli-osx-arm64.tar.gz
 mkdir -p xrayne-cli
 tar -xzf xrayne-cli-osx-arm64.tar.gz -C xrayne-cli
 sudo mkdir -p /opt/xrayne/cli
@@ -162,7 +169,7 @@ xrayne version
 ### Windows x64
 
 ```powershell
-curl.exe -fsSL https://github.com/VanyaKrotov/xrayne/releases/latest/download/xrayne-cli-win-x64.zip -o xrayne-cli-win-x64.zip
+curl.exe -fsSL https://github.com/proxrayne/xrayne-cli/releases/latest/download/xrayne-cli-win-x64.zip -o xrayne-cli-win-x64.zip
 Expand-Archive -Path .\xrayne-cli-win-x64.zip -DestinationPath "$env:LOCALAPPDATA\XRayne\bin" -Force
 [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path", "User") + ";$env:LOCALAPPDATA\XRayne\bin", "User")
 $env:Path = "$env:Path;$env:LOCALAPPDATA\XRayne\bin"
